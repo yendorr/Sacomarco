@@ -55,17 +55,55 @@
 
     <!-- Page Content -->
     <div class="container">
+      <!--main row 1-->
       <div class="row">
-        <div class="col-lg-12 text-center">
-          <h1 class="mt-5">A Bootstrap 4 Starter Template</h1>
-          <p class="lead">Complete with pre-defined file paths and responsive navigation!</p>
-          <ul class="list-unstyled">
-            <li>Bootstrap 4.0.0-beta</li>
-            <li>jQuery 3.2.1</li>
-          </ul>
+        <!--col esquerda geral 2-->
+        <div class="col-md-10 text-left" style="margin: 0px;">
+          <!--row header-->
+          <div class="row">
+            <h1 class="Textao">Entrada de dados</h1>
+          </div>
+          <!--row min/max 3-->
+          <div class=row>
+            <div class="col-md-2">
+              Tipo do problema  
+            </div>
+            <div class="col-md-6">
+              <select class="Input">
+                <option>Maximizar</option>
+                <option>Minimizar</option>
+              </select> 
+            </div>
+          </div>
+          <!--row variaveis 3-->
+          <div class="row">
+            <div class="col-md-2 text-left">
+              Nº de variaveis
+            </div>
+            <div class="col-md-6 NumberInput" >
+              <input id="Variaveis" type="number" value=0  name="" class="Input InputNumber">
+            </div>
+          </div>
+          <!--row restriçoes 3-->
+          <div class="row">
+            <div class="col-md-2 text-left">
+              Nº de restrinções
+            </div>
+            <div class="col-md-6 text-left">
+              <input id="Restriscoes" type="number" value=0 name="" class="Input InputNumber">
+            </div>
+            
+
+          </div>
         </div>
+        <!---->
+        <div class="col-md-2 text-left"> 
+          Algo a ser considerado
+        </div>
+
       </div>
-    </div>
+      
+    </div>  
 
     
 

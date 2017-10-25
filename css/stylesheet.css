@@ -1,14 +1,28 @@
 *{
 	margin: 0px;
 	padding: 0px;
+	border: 0px;
 }
 body{
 	padding-top: 54px;
+}
+
+.Input{
+	border-bottom:solid 1px;
+}
+
+.InputNumber{
+	width:9%;
+}
+
+.Textao{
+	border-bottom:solid 3px;
 }
 
 @media (min-width: 992px) {
 	body{
 		padding-top: 56px;
 	}
+
 }
 
