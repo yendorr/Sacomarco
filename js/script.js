@@ -1,10 +1,12 @@
 var variaveis=3,restricoes=3;
 var max = false;
+var i,j;
+var A[][];
 $(document).ready(function(){
 	atulizaTabela();
 	$(".Input").blur(atulizaTabela);
 	$("#max").click(atualizaMax);
-
+	$("#go").click(go);
 });
 
 
@@ -13,7 +15,7 @@ function atulizaTabela(){
 	restricoes = $("#restricoes").val();
 
 	console.log("chamou");
-	// validaValores();
+	validaValores();
 	
 
 
@@ -35,26 +37,41 @@ function atulizaTabela(){
 		$("#tabela").append("<input type='text' class='Input B' id='B"+i+j+"'>");
 		$("#tabela").append("<br>");
 	}
+
 } 
 
 function validaValores(){
 	if(variaveis<3){
-		document.getElementById("#variaveis").value = "3";
+		$("#variaveis").val("3");
 		variaveis = 3;
 	}
 	if(variaveis>12){
-		document.getElementById("#variaveis").value = "10";
+		$("#variaveis").val("12");
 		variaveis = 12;	
 	}
 	if(restricoes<3){
-		document.getElementById("#restricoes").value = "3";
+		$("#restricoes").val("3");
 		restricoes = 3;
 	}
 	if(restricoes>12){
-		document.getElementById("#restricoes").value = "10";
+		$("#restricoes").val("12");
 		restricoes = 12;
 	}
 }
+
+function zera(){
+
+}
+
+function go(){
+	organizaDados();
+	resolve();
+}
+
+organizaDados(){
+	for()
+}
+
 
 function atualizaMax(){
 	$("#max").empty();

@@ -7,6 +7,11 @@ body{
 	padding-top: 54px;
 }
 
+button{
+	display: inline-block;
+	
+}
+
 .Input{
 	border-bottom:solid 1px;
 }
