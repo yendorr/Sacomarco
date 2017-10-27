@@ -19,10 +19,37 @@ body{
 	border-bottom:solid 3px;
 }
 
+.A, .B{
+	width:  3%;
+	text-align: right;
+}
+
+
+.S{
+	-webkit-appearance: none; 
+	-moz-appearance: none;
+   	appearance: none; 
+   	width: 2%;
+}
+
+.S:focus{
+	border:none;
+}
+
+.Indice{
+	font-size: 0.75em;
+}
+
+#max:hover{
+	color:blue;
+}
+
+#tabela{
+	margin-top: 2%;
+}
+
 @media (min-width: 992px) {
 	body{
 		padding-top: 56px;
 	}
-
 }
-

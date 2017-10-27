@@ -15,9 +15,9 @@
     <link href="css/stylesheet.css" rel="stylesheet">
 
     <!-- Bootstrap core JavaScript -->
-    <script src="jquery/jquery.min.js"></script>
+    <script src="js/jquery-3.2.1.min.js"></script>
     <script src="js/bootstrap.bundle.min.js"></script>
-
+    <script src="js/script.js"></script>
     <!-- Custom styles for this template -->
     
 
@@ -28,7 +28,7 @@
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
       <div class="container">
-        <a class="navbar-brand" href="#">Start Bootstrap</a>
+        <a class="navbar-brand" href="#">Rodney Souza</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
@@ -58,7 +58,7 @@
       <!--main row 1-->
       <div class="row">
         <!--col esquerda geral 2-->
-        <div class="col-md-10 text-left" style="margin: 0px;">
+        <div class="col-md-10 text-left">
           <!--row header-->
           <div class="row">
             <h1 class="Textao">Entrada de dados</h1>
@@ -68,11 +68,8 @@
             <div class="col-md-2">
               Tipo do problema  
             </div>
-            <div class="col-md-6">
-              <select class="Input">
-                <option>Maximizar</option>
-                <option>Minimizar</option>
-              </select> 
+            <div class="col-md-2" id="max">
+              Minimizar
             </div>
           </div>
           <!--row variaveis 3-->
@@ -80,8 +77,8 @@
             <div class="col-md-2 text-left">
               Nº de variaveis
             </div>
-            <div class="col-md-6 NumberInput" >
-              <input id="Variaveis" type="number" value=0  name="" class="Input InputNumber">
+            <div class="col-md-6" >
+              <input id="variaveis" type="number" value=3  name="" class="Input InputNumber">
             </div>
           </div>
           <!--row restriçoes 3-->
@@ -90,11 +87,13 @@
               Nº de restrinções
             </div>
             <div class="col-md-6 text-left">
-              <input id="Restriscoes" type="number" value=0 name="" class="Input InputNumber">
+              <input id="restricoes" type="number" value=3 name="" class="Input InputNumber">
             </div>
-            
-
           </div>
+          <div  id="tabela">
+              
+          </div>
+
         </div>
         <!---->
         <div class="col-md-2 text-left"> 
