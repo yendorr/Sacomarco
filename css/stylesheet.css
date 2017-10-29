@@ -14,6 +14,8 @@ button{
 
 .Input{
 	border-bottom:solid 1px;
+	width:  3%;
+	text-align: right;
 }
 
 .InputNumber{
@@ -23,12 +25,6 @@ button{
 .Textao{
 	border-bottom:solid 3px;
 }
-
-.A, .B{
-	width:  3%;
-	text-align: right;
-}
-
 
 .S{
 	-webkit-appearance: none; 
