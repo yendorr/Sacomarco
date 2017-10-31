@@ -3,11 +3,16 @@ const M = (27+10+1998)*999999999999999999999999999, m = 999999999999999999999999
 var variaveis = 3,restricoes = 3;
 var max = false;
 var i,j,j;
+var pivoI, pivoJ;
 var b = [], Cr = [], A = [], funcaoObjetivo = [], s = [], ba = [];
-var basica = [], naoBasica = [],sobra = [], deOnde = [], artificial = [];
-var contadorBasicas, contadorSobras,contadorArtificiais;
+var basica = [], naoBasica = [],sobra = [], deOnde = [], artificial = [],basesVisitadas = [];
+var contadorBasicas, contadorSobras, contadorArtificiais, contadorVisitadas;
+
 primeiraExecução = true;
-for(i=0;i<=maxVariaveis*3;i++) A[i]=[];
+for(i=0;i<=maxVariaveis*3;i++){
+	basesVisitadas[i] = [];
+	A[i] = [];
+} 
 
 $(document).ready(function(){
 	atulizaTabela();
@@ -68,13 +73,13 @@ function validaValores(){
 
 function zera(){
 	for(i=0;i<=restricoes;i++){
-		funcaoObjetivo[i]=null;
+		funcaoObjetivo[i] = null;
 		$("#z"+i).val(null);
 		for(j=0;j<=variaveis;j++){
-			A[i][j]=null;
+			A[i][j] = null;
 			$("#A"+i+j).val(null);
 		}
-		b[i]=null;
+		b[i] = null;
 		$("#b"+i).val(null);
 	}
 }
@@ -109,27 +114,53 @@ function go(){
 function resolve(){
 	zeraContadores();
 	formaPadrao();
-
 	calculaCr();
+	pivoJ = escolheNaoBasica();
+	calculaBa(pivoJ);
+	pivoI = escolheBasica();
 	preview();
+
+	while(!deuRuim()){
+	trocaBase();
+	calculaCr();
+	pivoJ = escolheNaoBasica();
+	calculaBa(pivoJ);
+	pivoI = escolheBasica();
+	preview();
+	}
 }
 
-function continua(){
+function deuRuim(){
+	if(CrNaoNegativo()){
+		return 1;
+	}
+	if(baseJaVisitada()){
+		return 2;
+	}
+	else
+		salvaBase();
 
+
+	return 0;
+}
+
+function CrNaoNegativo(){
+	for(j=1;j<variaveis;j++)
+		if(Cr[j]<0)
+			return false;
+	return true;
 }
 
 function zeraContadores(){
-	contadorBasicas=0;
-	contadorSobras=0;
-	contadorArtificiais=0;
-	variaveis = $("#variaveis").val();
-	restricoes = $("#restricoes").val();
-
+	contadorBasicas = 0;
+	contadorSobras = 0;
+	contadorArtificiais = 0;
+	contadorVisitadas = 0;
 }
 
 function formaPadrao(){
 	if(max)
-		for(j=1;j<=variaveis;i++)
+		for(j=1;j<=variaveis;j++)
 			funcaoObjetivo[j]*=-1;	
 
 	positivaB();	
@@ -150,9 +181,9 @@ function positivaB(){
 			b[i]*=-1;
 
 			if (s[i]=='>') 
-				s[i]='<';
+				s[i] = '<';
 			else if(s[i]=='<')
-				s[i]='>';
+				s[i] = '>';
 
 			for(j=1;j<=variaveis;j++)
 				A[i][j]*=-1
@@ -173,7 +204,7 @@ function formaMenor(linha){
 function formaMaior(linha){
 	variaveis++;	
 	for(j=1;j<=restricoes;j++)
-		A[j][variaveis]=0;
+		A[j][variaveis] = 0;
 	sobra[++contadorSobras] = variaveis;
 	deOnde[contadorSobras] = j;
 	A[linha][variaveis] = -1;	
@@ -205,18 +236,48 @@ function calculaCr(){
 		for(i=1;i<=restricoes;i++){
 			soma+=funcaoObjetivo[basica[i]]*A[i][j];
 		}
-		Cr[j]=funcaoObjetivo[j] - soma;
+		Cr[j] = funcaoObjetivo[j] - soma;
 	}
 }
 
+function calculaBa(coluna){
+	for(i=1;i<=restricoes;i++)
+		if (A[i][coluna])
+			ba[i] = b[i]/A[i][coluna];
+		else
+			ba[i] = M;
+}	
+
+function escolheBasica(){
+	var menorValor, indice;
+	menorValor = ba[1];
+	indice = 1;
+	for(i=2;i<=restricoes;i++)
+		if(ba[i]<menorValor && ba[i]>0){
+			menorValor = ba[i];
+			indice = i;
+		}
+	return indice;
+}
+
+function escolheNaoBasica(){
+	var menorValor,indice;
+	menorValor = Cr[1];
+	indice = 1;
+	for(j=2;j<=variaveis;j++)	
+		if(Cr[j]<menorValor){
+			menorValor = Cr[j];
+			indice = j;
+		}
+	return indice;
+}
+
+function trocaBase(){
+	basica[pivoI] = pivoJ;
+}
+
 function preview(){
-	console.log(A);
-	console.log(s);
-	console.log(b);
-	console.log(funcaoObjetivo);
 	$("#preview").append("z = ");
-	console.log("var = "+variaveis);
-	console.log("res = "+restricoes);
 	for(j=1;j<=variaveis;j++){
 		if(funcaoObjetivo[j]>m)
 		$("#preview").append("M");	
@@ -233,6 +294,7 @@ function preview(){
 			$("#preview").append("X"+j+" + ");
 		}
 		$("#preview").append(" = "+b[i]);
+		$("#preview").append(" | "+ba[i]);
 		$("#preview").append("<br>");
 	}
 	$("#preview").append("<br>--------------------------------------------<br>");
@@ -246,6 +308,7 @@ function preview(){
 		else
 		$("#preview").append(Cr[j]+" | ");
 	}
+	$("#preview").append("<br><br>");
 
 }
 
