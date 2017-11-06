@@ -11,6 +11,7 @@ var contadorBasicas, contadorSobras, contadorArtificiais, contadorVisitadas;
 primeiraExecução = true;
 for(i=0;i<=maxVariaveis*3;i++){
 	basesVisitadas[i] = [];
+
 	A[i] = [];
 } 
 
@@ -121,12 +122,12 @@ function resolve(){
 	preview();
 
 	while(!deuRuim()){
-	trocaBase();
-	calculaCr();
-	pivoJ = escolheNaoBasica();
-	calculaBa(pivoJ);
-	pivoI = escolheBasica();
-	preview();
+		trocaBase();
+		calculaCr();
+		pivoJ = escolheNaoBasica();
+		calculaBa(pivoJ);
+		pivoI = escolheBasica();
+		preview();
 	}
 }
 
@@ -139,6 +140,10 @@ function deuRuim(){
 	}
 	else
 		salvaBase();
+	if(!pivoI){
+		return 3;
+	}
+
 
 
 	return 0;
@@ -150,6 +155,26 @@ function CrNaoNegativo(){
 			return false;
 	return true;
 }
+
+function baseJaVisitada(){
+	var visitada;
+	for (i=1;i<=contadorVisitadas;i++){
+		visitada = true;
+		for(j=1;j<=restricoes;i++){
+			if(basica[j]!=basesVisitadas[i][j])
+				visitada = false;
+		}
+		if(visitada)	return true;
+	}
+	return false;
+}
+
+function salvaBase(){
+	contadorVisitadas++;
+	for(j=1;j<=restricoes;j++)
+		basesVisitadas[contadorVisitadas][j]=basica[j];
+}
+
 
 function zeraContadores(){
 	contadorBasicas = 0;
@@ -250,9 +275,9 @@ function calculaBa(coluna){
 
 function escolheBasica(){
 	var menorValor, indice;
-	menorValor = ba[1];
-	indice = 1;
-	for(i=2;i<=restricoes;i++)
+	menorValor = m;
+	indice = 0;
+	for(i=1;i<=restricoes;i++)
 		if(ba[i]<menorValor && ba[i]>0){
 			menorValor = ba[i];
 			indice = i;
