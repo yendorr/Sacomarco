@@ -34,7 +34,7 @@ function atulizaTabela(){
 	$("#tabela").append("Z = ");		
 	for(i=1;i<=variaveis;i++){
 		$("#tabela").append("<input class='Input ' type='text' id='z"+i+"'> X");
-		$("#tabela").append("<label class='Indice' >"+i+" </label>");
+		$("#tabela").append("<sub>"+i+" </sub>");
 		if(i!=variaveis)	$("#tabela").append(" + ");		
 	}
 	$("#tabela").append("<br><br>");
@@ -42,7 +42,7 @@ function atulizaTabela(){
 	for(i=1;i<=restricoes;i++){
 		for(j=1;j<=variaveis;j++){
 			$("#tabela").append("<input class='Input' type='text' id='A"+i+j+"'> X");
-			$("#tabela").append("<label class='Indice'>"+j+" </label>");
+			$("#tabela").append("<sub>"+j+" </sub");
 			if(j!=variaveis)	$("#tabela").append(" + ");		
 		}
 		//coloca vetor b
@@ -109,16 +109,19 @@ function restauraDados(){
 
 function go(){
 	salvaDados();
+	ColocaFoto();
 	resolve();
 }
 
 function resolve(){
 	zeraContadores();
 	formaPadrao();
+	previewFuncaoObjetivo();
 	calculaCr();
 	pivoJ = escolheNaoBasica();
 	calculaBa(pivoJ);
 	pivoI = escolheBasica();
+	console.log(A);
 	preview();
 
 	while(!deuRuim()){
@@ -147,6 +150,13 @@ function deuRuim(){
 
 
 	return 0;
+}
+
+function ColocaFoto(){
+	 var ap = "<img src='img/Rodney.jpg' data-toggle='modal' data-target='#folha'>";
+
+	 $("#foto").empty();
+	 $("#foto").append(ap);
 }
 
 function CrNaoNegativo(){
@@ -181,6 +191,9 @@ function zeraContadores(){
 	contadorSobras = 0;
 	contadorArtificiais = 0;
 	contadorVisitadas = 0;
+
+	variaveis = $("#variaveis").val();
+	restricoes = $("#restricoes").val();
 }
 
 function formaPadrao(){
@@ -301,39 +314,75 @@ function trocaBase(){
 	basica[pivoI] = pivoJ;
 }
 
-function preview(){
-	$("#preview").append("z = ");
+function previewFuncaoObjetivo(){
+	$("#preview").empty();
+	$("#preview").append("Z = ");
 	for(j=1;j<=variaveis;j++){
+
 		if(funcaoObjetivo[j]>m)
 		$("#preview").append("M");	
 		else
 		$("#preview").append(funcaoObjetivo[j]);
-		$("#preview").append("X"+j+" + ");
-	}
-	$("#preview").append("<br><br>");
 
-	for(i=1;i<=restricoes;i++){
-		$("#preview").append(basica[i]+" |");
-		for(j=1;j<=variaveis;j++){
-			$("#preview").append(A[i][j]);
-			$("#preview").append("X"+j+" + ");
-		}
-		$("#preview").append(" = "+b[i]);
-		$("#preview").append(" | "+ba[i]);
-		$("#preview").append("<br>");
+		$("#preview").append("X<sub>"+j+"</sub>");
+		if(j!=variaveis)
+			$("#preview").append(" +");
 	}
-	$("#preview").append("<br>--------------------------------------------<br>");
-	for(j=1;j<=variaveis;j++){
-		if(Cr[j]>m||-m>Cr[j]){
-			if(Cr[j]>0)
-				$("#preview").append("M | ");		
-			else
-				$("#preview").append("-M | ");
-		}
-		else
-		$("#preview").append(Cr[j]+" | ");
-	}
+}
+
+function preview(){
 	$("#preview").append("<br><br>");
+	$("#preview").append("<table>");
+		$("#preview").append("<tr>");
+			$("#preview").append("<td></td>");
+			$("#preview").append("<td class='tabeleiro dir' >variaveis</td>");
+			for(j=1;j<=variaveis;j++)
+				$("#preview").append("<td class='tabeleiro'>X<sub>"+j+"</sub></td>");		
+
+		$("#preview").append("</tr>");	
+
+		$("#preview").append("<tr>");
+			$("#preview").append("<td class='tabeleiro down'> bases </td>");
+			$("#preview").append("<td class='down dir'> </td>");
+
+			for(j=1;j<=variaveis;j++)
+				if(funcaoObjetivo[j]<m)
+					$("#preview").append("<td class='down'>"+ funcaoObjetivo[j] +"</td>");	
+				else
+					$("#preview").append("<td>M</td>");	
+
+			$("#preview").append("<td class='esq down tabeleiro'>b</td>");
+			$("#preview").append("<td class='down tabeleiro'>b/a</td>");
+		$("#preview").append("</tr>");
+
+		for(i=1;i<=restricoes;i++){
+			$("#preview").append("<tr>");
+			$("#preview").append("<td class='tabeleiro'>X<sub>"+ basica[i] +"</sub></td>");
+			if(funcaoObjetivo[basica[i]]<m)
+				$("#preview").append("<td class='dir'>"+ funcaoObjetivo[basica[i]] +"</td>");
+			else
+				$("#preview").append("<td class='dir'>M</td>");
+			for(j=1;j<=variaveis;j++)
+				$("#preview").append("<td>"+A[i][j]+"</td>");
+			$("#preview").append("<td class='esq'>"+b[i]+"</td>");			
+			if(ba[i]<m)
+				$("#preview").append("<td>"+ba[i]+"</td>");			
+			else
+				$("#preview").append("<td>ºº</tr>")
+			$("#preview").append("</tr>");
+		}
+		$("#preview").append("<tr>");
+		$("#preview").append("<td class= 'up'></td>");
+		$("#preview").append("<td class='dir up'></td>");
+			for(j=1;j<=variaveis;j++)
+				$("#preview").append("<td class='up'>"+Cr[j]+"</td>");
+			$("#preview").append("<td class='esq up'>Z</td>");
+			$("#preview").append("<td class='up'></td>");
+		$("#preview").append("</tr>");
+	$("#preview").append("</table>");
+
+
+	$("#preview").append("");
 
 }
 
