@@ -3,7 +3,6 @@ const M = (27+10+1998)*999999999999999999999999999, m = 999999999999999999999999
 var variaveis = 3,restricoes = 3;
 var max = false;
 var i,j,j;
-var pivoI, pivoJ;
 var b = [], Cr = [], A = [], funcaoObjetivo = [], s = [], ba = [];
 var basica = [], naoBasica = [],sobra = [], deOnde = [], artificial = [],basesVisitadas = [];
 var contadorBasicas, contadorSobras, contadorArtificiais, contadorVisitadas;
@@ -115,6 +114,7 @@ function go(){
 }
 
 function resolve(){
+	var pivoI, pivoJ;
 	zeraContadores();
 	formaPadrao();
 	previewFuncaoObjetivo();
@@ -123,29 +123,61 @@ function resolve(){
 	calculaBa(pivoJ);
 	pivoI = escolheBasica();
 	console.log(A);
-	preview();
+	console.log(pivoJ);
+	console.log(pivoJ);
+	preview(pivoI,pivoJ);
 
-	while(!deuRuim()){
-		trocaBase();
+	while(!deuRuim(pivoI,pivoJ)){
+		trocaBase(pivoI,pivoJ);
+		escalona(pivoI,pivoJ);
 		calculaCr();
 		pivoJ = escolheNaoBasica();
 		calculaBa(pivoJ);
 		pivoI = escolheBasica();
-		preview();
+		preview(pivoI,pivoJ);
 	}
 }
 
-function deuRuim(){
+function escalona(I,J){
+	var pivo = A[I][J];
+	var multiplicador;
+
+	for(j=1;j<=variaveis;j++)
+		A[I][j]/=pivo;
+		b[I]/=pivo;
+	
+	for(i=1;i<I;i++){
+		multiplicador = A[i][J];
+		console.log(i +" "+multiplicador);
+		for(j=1;j<=variaveis;j++)
+			A[i][j]-=A[I][j] * multiplicador;
+			b[i]-=b[I] * multiplicador;
+	}
+
+	for(i=I+1;i<=restricoes;i++){
+		multiplicador = A[i][J];
+		console.log(i +" "+multiplicador);
+		for(j=1;j<=variaveis;j++)
+			A[i][j]-=A[I][j] * multiplicador;
+			b[i]-=b[I] * multiplicador;
+	}
+
+}
+
+function deuRuim(i,j){
 	if(CrNaoNegativo()){
 		return 1;
 	}
-	if(baseJaVisitada()){
-		return 2;
-	}
+	// if(baseJaVisitada()){
+	// 	return 2;
+	// }
 	else
 		salvaBase();
-	if(!pivoI){
+	if(!i){
 		return 3;
+	}
+	if(!j){
+		return 4;
 	}
 
 
@@ -161,18 +193,18 @@ function CrNaoNegativo(){
 	return true;
 }
 
-function baseJaVisitada(){
-	var visitada;
-	for (i=1;i<=contadorVisitadas;i++){
-		visitada = true;
-		for(j=1;j<=restricoes;i++){
-			if(basica[j]!=basesVisitadas[i][j])
-				visitada = false;
-		}
-		if(visitada)	return true;
-	}
-	return false;
-}
+// function baseJaVisitada(){
+// 	var visitada;
+// 	for (i=1;i<=contadorVisitadas;i++){
+// 		visitada = true;
+// 		for(j=1;j<=restricoes;i++){
+// 			if(basica[j]!=basesVisitadas[i][j])
+// 				visitada = false;
+// 		}
+// 		if(visitada)	return true;
+// 	}
+// 	return false;
+// }
 
 function salvaBase(){
 	contadorVisitadas++;
@@ -295,9 +327,9 @@ function escolheBasica(){
 
 function escolheNaoBasica(){
 	var menorValor,indice;
-	menorValor = Cr[1];
-	indice = 1;
-	for(j=2;j<=variaveis;j++)	
+	menorValor = m;
+	indice = 0;
+	for(j=1;j<=variaveis;j++)	
 		if(Cr[j]<menorValor &&Cr[j]<0){
 			menorValor = Cr[j];
 			indice = j;
@@ -305,8 +337,8 @@ function escolheNaoBasica(){
 	return indice;
 }
 
-function trocaBase(){
-	basica[pivoI] = pivoJ;
+function trocaBase(I,J){
+	basica[I] = J;
 }
 
 function ColocaFoto(){
@@ -332,7 +364,7 @@ function previewFuncaoObjetivo(){
 	}
 }
 
-function preview(){
+function preview(I,J){
 	$("#preview").append("<br><br>");
 	$("#preview").append("<table>");
 		$("#preview").append("<tr>");
@@ -365,7 +397,7 @@ function preview(){
 			else
 				$("#preview").append("<td class='dir'>M</td>");
 			for(j=1;j<=variaveis;j++)
-				if(pivoI==i && pivoJ==j)
+				if(I==i && J==j)
 					$("#preview").append("<td class='pivo'>"+A[i][j]+"</td>");
 				else
 					$("#preview").append("<td>"+A[i][j]+"</td>");
