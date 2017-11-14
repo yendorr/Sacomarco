@@ -2,15 +2,15 @@ const maxVariaveis = 12, minVariaveis = 1, maxRestricoes = 12, minRestricoes = 1
 const M = (27+10+1998)*999999999999999999999999999, m = 999999999999999999999999999;
 var variaveis = 3,restricoes = 3;
 var max = false;
-var i,j,j;
+var i,j;
 var b = [], Cr = [], A = [], funcaoObjetivo = [], s = [], ba = [];
 var basica = [], naoBasica = [],sobra = [], deOnde = [], artificial = [],basesVisitadas = [];
 var contadorBasicas, contadorSobras, contadorArtificiais, contadorVisitadas;
+var z;
 
 primeiraExecução = true;
 for(i=0;i<=maxVariaveis*3;i++){
 	basesVisitadas[i] = [];
-
 	A[i] = [];
 } 
 
@@ -122,9 +122,7 @@ function resolve(){
 	pivoJ = escolheNaoBasica();
 	calculaBa(pivoJ);
 	pivoI = escolheBasica();
-	console.log(A);
-	console.log(pivoJ);
-	console.log(pivoJ);
+	calculaZ();
 	preview(pivoI,pivoJ);
 
 	while(!deuRuim(pivoI,pivoJ)){
@@ -134,6 +132,7 @@ function resolve(){
 		pivoJ = escolheNaoBasica();
 		calculaBa(pivoJ);
 		pivoI = escolheBasica();
+		calculaZ();
 		preview(pivoI,pivoJ);
 	}
 }
@@ -210,6 +209,12 @@ function salvaBase(){
 	contadorVisitadas++;
 	for(j=1;j<=restricoes;j++)
 		basesVisitadas[contadorVisitadas][j]=basica[j];
+}
+
+calculaZ(){
+	for(i=1;i<=restricoes;i++){
+		
+	}
 }
 
 
