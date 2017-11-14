@@ -82,6 +82,7 @@ function zera(){
 		}
 		b[i] = null;
 		$("#b"+i).val(null);
+		$("#foto").empty();
 	}
 }
 
@@ -152,12 +153,6 @@ function deuRuim(){
 	return 0;
 }
 
-function ColocaFoto(){
-	 var ap = "<img src='img/Rodney.jpg' data-toggle='modal' data-target='#folha'>";
-
-	 $("#foto").empty();
-	 $("#foto").append(ap);
-}
 
 function CrNaoNegativo(){
 	for(j=1;j<variaveis;j++)
@@ -303,7 +298,7 @@ function escolheNaoBasica(){
 	menorValor = Cr[1];
 	indice = 1;
 	for(j=2;j<=variaveis;j++)	
-		if(Cr[j]<menorValor){
+		if(Cr[j]<menorValor &&Cr[j]<0){
 			menorValor = Cr[j];
 			indice = j;
 		}
@@ -312,6 +307,13 @@ function escolheNaoBasica(){
 
 function trocaBase(){
 	basica[pivoI] = pivoJ;
+}
+
+function ColocaFoto(){
+	 var ap = "<img src='img/Rodney.jpg' data-toggle='modal' data-target='#folha'>";
+
+	 $("#foto").empty();
+	 $("#foto").append(ap);
 }
 
 function previewFuncaoObjetivo(){
@@ -349,7 +351,7 @@ function preview(){
 				if(funcaoObjetivo[j]<m)
 					$("#preview").append("<td class='down'>"+ funcaoObjetivo[j] +"</td>");	
 				else
-					$("#preview").append("<td>M</td>");	
+					$("#preview").append("<td class='down'>M</td>");	
 
 			$("#preview").append("<td class='esq down tabeleiro'>b</td>");
 			$("#preview").append("<td class='down tabeleiro'>b/a</td>");
@@ -363,7 +365,10 @@ function preview(){
 			else
 				$("#preview").append("<td class='dir'>M</td>");
 			for(j=1;j<=variaveis;j++)
-				$("#preview").append("<td>"+A[i][j]+"</td>");
+				if(pivoI==i && pivoJ==j)
+					$("#preview").append("<td class='pivo'>"+A[i][j]+"</td>");
+				else
+					$("#preview").append("<td>"+A[i][j]+"</td>");
 			$("#preview").append("<td class='esq'>"+b[i]+"</td>");			
 			if(ba[i]<m)
 				$("#preview").append("<td>"+ba[i]+"</td>");			
@@ -375,7 +380,12 @@ function preview(){
 		$("#preview").append("<td class= 'up'></td>");
 		$("#preview").append("<td class='dir up'></td>");
 			for(j=1;j<=variaveis;j++)
-				$("#preview").append("<td class='up'>"+Cr[j]+"</td>");
+				if(Cr[j]>m)
+					$("#preview").append("<td class='up'>M</td>");
+				else if (Cr[j]<-m)
+					$("#preview").append("<td class='up'>-M</td>");
+				else
+					$("#preview").append("<td class='up'>"+Cr[j]+"</td>");
 			$("#preview").append("<td class='esq up'>Z</td>");
 			$("#preview").append("<td class='up'></td>");
 		$("#preview").append("</tr>");
