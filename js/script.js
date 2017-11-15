@@ -1,12 +1,14 @@
 const maxVariaveis = 12, minVariaveis = 1, maxRestricoes = 12, minRestricoes = 1;
 const M = (27+10+1998)*999999999999999999999999999, m = 999999999999999999999999999;
 var variaveis = 3,restricoes = 3;
+var variaveisOriginais, restiçoesOriginais;
 var max = false;
 var i,j;
-var b = [], Cr = [], A = [], funcaoObjetivo = [], s = [], ba = [];
+var b = [], Cr = [], A = [], funcaoObjetivo = [], s = [], ba = [], x = [];
 var basica = [], naoBasica = [],sobra = [], deOnde = [], artificial = [],basesVisitadas = [];
 var contadorBasicas, contadorSobras, contadorArtificiais, contadorVisitadas;
 var z;
+var interpretacao;
 
 primeiraExecução = true;
 for(i=0;i<=maxVariaveis*3;i++){
@@ -109,8 +111,10 @@ function restauraDados(){
 
 function go(){
 	salvaDados();
-	ColocaFoto();
 	resolve();
+	colocaResposta();
+	ColocaFoto();
+
 }
 
 function resolve(){
@@ -135,6 +139,8 @@ function resolve(){
 		calculaZ();
 		preview(pivoI,pivoJ);
 	}
+	calculaX();
+	calculaZ();
 }
 
 function escalona(I,J){
@@ -147,7 +153,6 @@ function escalona(I,J){
 	
 	for(i=1;i<I;i++){
 		multiplicador = A[i][J];
-		console.log(i +" "+multiplicador);
 		for(j=1;j<=variaveis;j++)
 			A[i][j]-=A[I][j] * multiplicador;
 			b[i]-=b[I] * multiplicador;
@@ -155,7 +160,6 @@ function escalona(I,J){
 
 	for(i=I+1;i<=restricoes;i++){
 		multiplicador = A[i][J];
-		console.log(i +" "+multiplicador);
 		for(j=1;j<=variaveis;j++)
 			A[i][j]-=A[I][j] * multiplicador;
 			b[i]-=b[I] * multiplicador;
@@ -165,11 +169,13 @@ function escalona(I,J){
 
 function deuRuim(i,j){
 	if(CrNaoNegativo()){
+		interpretacao = "O custo reduzido de todas as variaveis não é mais negativo";
 		return 1;
 	}
-	// if(baseJaVisitada()){
-	// 	return 2;
-	// }
+	 if(baseJaVisitada()){
+	 	interpretacao = "O metodo estava ciclando"
+	 	return 2;
+	 }
 	else
 		salvaBase();
 	if(!i){
@@ -178,7 +184,6 @@ function deuRuim(i,j){
 	if(!j){
 		return 4;
 	}
-
 
 
 	return 0;
@@ -211,10 +216,20 @@ function salvaBase(){
 		basesVisitadas[contadorVisitadas][j]=basica[j];
 }
 
-calculaZ(){
-	for(i=1;i<=restricoes;i++){
-		
-	}
+function calculaX(){
+
+	for(j=1;j<=variaveis;j++)
+		x[j] = 0
+
+	for(i=1;i<=restricoes;i++)
+		x[basica[i]] = b[i];
+	
+}
+
+function calculaZ(){
+	z = 0;
+	for(j=1;j<=variaveisOriginais;j++)
+		z += x[j]*funcaoObjetivo[j];
 }
 
 
@@ -226,6 +241,8 @@ function zeraContadores(){
 
 	variaveis = $("#variaveis").val();
 	restricoes = $("#restricoes").val();
+	variaveisOriginais = variaveis;
+	restiçoesOriginais = restricoes;
 }
 
 function formaPadrao(){
@@ -345,6 +362,24 @@ function escolheNaoBasica(){
 function trocaBase(I,J){
 	basica[I] = J;
 }
+
+function colocaResposta(){
+	if(max) z =-z;
+	var tabela
+	$("#resultados").empty();
+
+
+	$("#resultados").append("z = "+z+"<br><br>");
+	coluna1 = "";
+	coluna2 = "<table border='1' class='vetor'>";
+	for(j=1;j<=variaveisOriginais;j++){
+		coluna2+="<tr><td>"
+		coluna2+=x[j];
+		coluna2+="</tr></td>"
+	}
+	$("#resultados").append("<table><tr><td id='chess'>X = </td><td>"+coluna2+"<td></tr></table>");
+	$("#resultados").append("<br><br>");
+	}
 
 function ColocaFoto(){
 	 var ap = "<img src='img/Rodney.jpg' data-toggle='modal' data-target='#folha'>";
