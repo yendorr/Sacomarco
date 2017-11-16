@@ -144,6 +144,7 @@ function resolve(){
 		calculaX();
 		calculaZ();
 		preview(pivoI,pivoJ);
+		previewExtra();
 	}
 }
 
@@ -488,6 +489,15 @@ function preview(I,J){
 			$("#preview").append("<td class='up'></td>");
 		$("#preview").append("</tr>");
 	$("#preview").append("</table>");
+}
+
+function previewExtra(){
+	$("#sobras").empty();
+	$("#sobras").append();
+	for(i=1;i<=restricoes;i++){
+		$("#sobras").append("Restrição "+i+": "+x[sobra[i]]);
+		$("#sobras").append("<br>");
+	}
 }
 
 function verSobras(){
