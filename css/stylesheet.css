@@ -84,6 +84,14 @@ td{
 	border-bottom: solid black 1px;
 }
 
+.red{
+	color: red;
+}
+
+.green{
+	color: green;
+}
+
 .tabeleiro{
 	font-size: 0.8em;
 	font-style: italic;

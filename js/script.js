@@ -3,12 +3,14 @@ const M = (27+10+1998)*999999999999999999999999999, m = 999999999999999999999999
 var variaveis = 3,restricoes = 3;
 var variaveisOriginais, restiçoesOriginais;
 var max = false;
+var temArtificial = true;
 var i,j;
 var b = [], Cr = [], A = [], funcaoObjetivo = [], s = [], ba = [], x = [];
 var basica = [], naoBasica = [],sobra = [], deOnde = [], artificial = [],basesVisitadas = [];
 var contadorBasicas, contadorSobras, contadorArtificiais, contadorVisitadas;
 var z;
 var interpretacao;
+
 
 primeiraExecução = true;
 for(i=0;i<=maxVariaveis*3;i++){
@@ -22,6 +24,8 @@ $(document).ready(function(){
 	$("#max").click(atualizaMax);
 	$("#go").click(go);
 	$("#clear").click(zera);
+	var divSobras = document.getElementById("sobras");
+    divSobras.style.display = "none";
 });
 
 function atulizaTabela(){
@@ -126,6 +130,7 @@ function resolve(){
 	pivoJ = escolheNaoBasica();
 	calculaBa(pivoJ);
 	pivoI = escolheBasica();
+	calculaX();
 	calculaZ();
 	preview(pivoI,pivoJ);
 
@@ -136,11 +141,10 @@ function resolve(){
 		pivoJ = escolheNaoBasica();
 		calculaBa(pivoJ);
 		pivoI = escolheBasica();
+		calculaX();
 		calculaZ();
 		preview(pivoI,pivoJ);
 	}
-	calculaX();
-	calculaZ();
 }
 
 function escalona(I,J){
@@ -169,15 +173,15 @@ function escalona(I,J){
 
 function deuRuim(i,j){
 	if(CrNaoNegativo()){
+
 		interpretacao = "O custo reduzido de todas as variaveis não é mais negativo";
+		// if(baseJaVisitada()){
+		// 	return 3;
+		// }
 		return 1;
 	}
-	 if(baseJaVisitada()){
-	 	interpretacao = "O metodo estava ciclando"
-	 	return 2;
-	 }
-	else
-		salvaBase();
+	// else
+	// 	salvaBase();
 	if(!i){
 		return 3;
 	}
@@ -202,11 +206,15 @@ function CrNaoNegativo(){
 // 	for (i=1;i<=contadorVisitadas;i++){
 // 		visitada = true;
 // 		for(j=1;j<=restricoes;i++){
+// 			console.log("j = "+j);
+// 			console.log("basica = "+basica[j]);
+// 			console.log("visitada = "+basesVisitadas[i][j] );
 // 			if(basica[j]!=basesVisitadas[i][j])
 // 				visitada = false;
 // 		}
 // 		if(visitada)	return true;
 // 	}
+// 	salvaBase();
 // 	return false;
 // }
 
@@ -230,6 +238,8 @@ function calculaZ(){
 	z = 0;
 	for(j=1;j<=variaveisOriginais;j++)
 		z += x[j]*funcaoObjetivo[j];
+	if(max)
+		z = -z;
 }
 
 
@@ -296,7 +306,7 @@ function formaMaior(linha){
 	deOnde[contadorSobras] = j;
 	A[linha][variaveis] = -1;	
 	funcaoObjetivo[variaveis] = 0;
-
+	temArtificial = true;
 
 	variaveis++;
 	for(j=1;j<=restricoes;j++)
@@ -315,6 +325,7 @@ function formaIgual(linha){
 	artificial[++contadorArtificiais] = variaveis;
 	A[linha][variaveis] = 1;
 	funcaoObjetivo[variaveis] = M;
+	temArtificial
 }
 
 function calculaCr(){
@@ -361,10 +372,22 @@ function escolheNaoBasica(){
 
 function trocaBase(I,J){
 	basica[I] = J;
+	if(temArtificial)
+		verificaArtificiais();
+}
+
+function verificaArtificiais(){
+	for(i=1;i<=contadorArtificiais;i++){
+		for(j=1;j<=restricoes;j++){
+			if(artificial[i]==basica[j]){
+				temArtificial = true
+			}
+		}
+	}
+	temArtificial = false;
 }
 
 function colocaResposta(){
-	if(max) z =-z;
 	var tabela
 	$("#resultados").empty();
 
@@ -458,14 +481,23 @@ function preview(I,J){
 					$("#preview").append("<td class='up'>-M</td>");
 				else
 					$("#preview").append("<td class='up'>"+Cr[j]+"</td>");
-			$("#preview").append("<td class='esq up'>Z</td>");
+			if(temArtificial)
+				$("#preview").append("<td class='esq up red'>"+z+"</td>");
+			else
+				$("#preview").append("<td class='esq up green'>"+z+"</td>");
 			$("#preview").append("<td class='up'></td>");
 		$("#preview").append("</tr>");
 	$("#preview").append("</table>");
+}
 
-
-	$("#preview").append("");
-
+function verSobras(){
+	var divSobras = document.getElementById("sobras");
+        divSobras.style.display = "none";
+    if (divSobras.style.display === "none") {
+        divSobras.style.display = "block";
+    } else {
+        divSobras.style.display = "none";
+    }
 }
 
 function atualizaMax(){
