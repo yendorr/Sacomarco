@@ -4,6 +4,7 @@ var variaveis = 3,restricoes = 3;
 var variaveisOriginais, restiçoesOriginais;
 var max = false;
 var temArtificial = true;
+var temBaOk = true;
 var i,j;
 var b = [], Cr = [], A = [], funcaoObjetivo = [], s = [], ba = [], x = [];
 var basica = [], naoBasica = [],sobra = [], deOnde = [], artificial = [],basesVisitadas = [];
@@ -24,8 +25,7 @@ $(document).ready(function(){
 	$("#max").click(atualizaMax);
 	$("#go").click(go);
 	$("#clear").click(zera);
-	var divSobras = document.getElementById("sobras");
-    divSobras.style.display = "none";
+	$("#checkSobras").click(verSobras)
 });
 
 function atulizaTabela(){
@@ -144,8 +144,8 @@ function resolve(){
 		calculaX();
 		calculaZ();
 		preview(pivoI,pivoJ);
-		previewExtra();
 	}
+		previewExtra();
 }
 
 function escalona(I,J){
@@ -345,6 +345,13 @@ function calculaBa(coluna){
 			ba[i] = b[i]/A[i][coluna];
 		else
 			ba[i] = M;
+
+		if(temBaOk){
+			temBaOk = false;
+			for(i=1;i<=restricoes;i++){
+				if (ba[i]>0 && ba[i]<m) temBaOk = true;
+			}
+		}
 }	
 
 function escolheBasica(){
@@ -382,27 +389,42 @@ function verificaArtificiais(){
 		for(j=1;j<=restricoes;j++){
 			if(artificial[i]==basica[j]){
 				temArtificial = true
+				return 1;
 			}
 		}
 	}
 	temArtificial = false;
+	return 0;
 }
 
 function colocaResposta(){
 	var tabela
 	$("#resultados").empty();
-
-
-	$("#resultados").append("z = "+z+"<br><br>");
-	coluna1 = "";
-	coluna2 = "<table border='1' class='vetor'>";
-	for(j=1;j<=variaveisOriginais;j++){
-		coluna2+="<tr><td>"
-		coluna2+=x[j];
-		coluna2+="</tr></td>"
+	if(temArtificial){
+		$("#resultados").append("X = { }");
+		$("#resultados").append("<br><br>");
 	}
-	$("#resultados").append("<table><tr><td id='chess'>X = </td><td>"+coluna2+"<td></tr></table>");
-	$("#resultados").append("<br><br>");
+	else{
+		$("#resultados").append("z = "+z+"<br><br>");
+		coluna1 = "";
+		coluna2 = "<table class='vetor'>";
+		for(j=1;j<=variaveisOriginais;j++){
+			coluna2+="<tr><td>"
+			coluna2+=x[j];
+			coluna2+="</td></tr>"
+		}
+		coluna2+="</table>"
+		$("#resultados").append("<table style='text-align=center;'><tr><td id='chess'>X = </td><td>"+coluna2+"<td></tr></table>");
+		if(!temBaOk && !(CrNaoNegativo())){
+		$("#resultados").append("<br>");
+			$("#resultados").append("e outas infinitas soluções");
+		}
+				$("#resultados").append("<br><br>");
+
+	}
+
+	$("#checkSobras").prop('checked', false);
+	$("#divSobras").collapse('hide');
 	}
 
 function ColocaFoto(){
@@ -492,22 +514,17 @@ function preview(I,J){
 }
 
 function previewExtra(){
-	$("#sobras").empty();
-	$("#sobras").append();
-	for(i=1;i<=restricoes;i++){
-		$("#sobras").append("Restrição "+i+": "+x[sobra[i]]);
-		$("#sobras").append("<br>");
+	$("#divSobras").empty();
+	for(i=1;i<=restricoes;i++)
+		if(x[sobra[i]]){
+		$("#divSobras").append("Restrição "+i+": x<sub>"+sobra[i]+"</sub> = "+x[sobra[i]]);
+		$("#divSobras").append("<br>");
 	}
 }
 
 function verSobras(){
-	var divSobras = document.getElementById("sobras");
-        divSobras.style.display = "none";
-    if (divSobras.style.display === "none") {
-        divSobras.style.display = "block";
-    } else {
-        divSobras.style.display = "none";
-    }
+	$('#divSobras').collapse('toggle'); 
+    
 }
 
 function atualizaMax(){
