@@ -113,12 +113,13 @@ td{
 }*/
 
 .vetor{
-	border-radius: 15px;
+	border-radius: 17px;
 	border-width: 2px;
 	border-style: none solid none solid;
 	border-color: #000000;
 	padding: 5px;
-	background-color: red;
+	/*background-color: red;*/
+	border-collapse: separate;
 }
 
 

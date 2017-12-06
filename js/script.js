@@ -3,8 +3,9 @@ const M = (27+10+1998)*999999999999999999999999999, m = 999999999999999999999999
 var variaveis = 3,restricoes = 3;
 var variaveisOriginais, restiçoesOriginais;
 var max = false;
-var temArtificial = true;
+var temArtificial = false;
 var temBaOk = true;
+var temSobras;
 var i,j;
 var b = [], Cr = [], A = [], funcaoObjetivo = [], s = [], ba = [], x = [];
 var basica = [], naoBasica = [],sobra = [], deOnde = [], artificial = [],basesVisitadas = [];
@@ -515,12 +516,19 @@ function preview(I,J){
 
 function previewExtra(){
 	$("#divSobras").empty();
+	temSobras = false; 
 	for(i=1;i<=restricoes;i++)
 		if(x[sobra[i]]){
 		$("#divSobras").append("Restrição "+i+": x<sub>"+sobra[i]+"</sub> = "+x[sobra[i]]);
 		$("#divSobras").append("<br>");
+		temSobras = true;
+	}
+	if(!temSobras){
+		$("#divSobras").append("Não há sobras");
+		$("#divSobras").append("<br>");
 	}
 }
+
 
 function verSobras(){
 	$('#divSobras').collapse('toggle'); 
