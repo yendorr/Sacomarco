@@ -52,22 +52,6 @@ td{
 	font-size: 0.75em;
 }
 
-#max:hover{
-	color:blue;
-}
-
-#tabela{
-	margin-top: 2%;
-}
-
-#chess{
-	text-align: right;
-}
-
-#resultados{
-	text-align: center;
-}
-
 .up{
 	border-top: solid black 1px;
 }
@@ -103,24 +87,49 @@ td{
 	border-color: #306066;
 }
 
-/*.vetors{
-	border-color: black;
-	border-width: 0px 5px 0px 5px;
-	border-style: solid;
-	border-radius: 10px;
-	background-color: aquamarine ;	
-	border-style: none solid none solid;
-}*/
-
 .vetor{
 	border-radius: 17px;
 	border-width: 2px;
 	border-style: none solid none solid;
 	border-color: #000000;
-	/*background-color: red;*/
 	border-collapse: separate;
+	padding: 2px;
 }
 
+#max:hover{
+	color:blue;
+}
+
+#tabela{
+	margin-top: 2%;
+}
+
+#chess{
+	text-align: right;
+}
+
+#resultados{
+	text-align: center;
+}
+
+#go{
+	margin-left: 20%;
+	margin-top: 5%;
+}
+
+#clear{
+	margin-left: 24%;
+	margin-top: 2%;
+}
+
+#divSobras {
+    border-width: 2px;
+    border-color: black;
+    border-style: solid;
+    margin-left: 2%;
+    border-radius: 15px;
+    margin-right: 70%;
+}
 
 @media (min-width: 992px) {
 	body{

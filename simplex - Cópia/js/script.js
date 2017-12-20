@@ -26,7 +26,7 @@ $(document).ready(function(){
 	$("#max").click(atualizaMax);
 	$("#go").click(go);
 	$("#clear").click(zera);
-	$("#checkSobras").click(verSobras)
+	$("#checkSobras").click(verSobras);
 });
 
 function atulizaTabela(){
@@ -108,10 +108,9 @@ function restauraDados(){
 		for(j=1;j<=variaveis;j++)
 			$("#A"+i+j).val(A[i][j]);
 		$("#b"+i).val(b[i]);
-	}	
-	if(s[1])
-		for(i=1;i<=restricoes;i++)
+	if(s[i])
 			$("#s"+i).val(s[i]);
+	}	
 }
 
 function go(){
@@ -327,7 +326,7 @@ function formaIgual(linha){
 	artificial[++contadorArtificiais] = variaveis;
 	A[linha][variaveis] = 1;
 	funcaoObjetivo[variaveis] = M;
-	temArtificial
+	temArtificial = true;
 }
 
 function calculaCr(){
@@ -386,21 +385,20 @@ function trocaBase(I,J){
 }
 
 function verificaArtificiais(){
-	for(i=1;i<=contadorArtificiais;i++){
-		for(j=1;j<=restricoes;j++){
+	for(i=1;i<=contadorArtificiais;i++)
+		for(j=1;j<=restricoes;j++)
 			if(artificial[i]==basica[j]){
 				temArtificial = true
 				return 1;
 			}
-		}
-	}
 	temArtificial = false;
 	return 0;
 }
 
 function colocaResposta(){
-	var tabela
+	var tabela;
 	$("#resultados").empty();
+	$('#resultados').append('<h2 class="Textao">Resultados</h2>')
 	if(temArtificial){
 		$("#resultados").append("X = { }");
 		$("#resultados").append("<br><br>");
@@ -411,14 +409,14 @@ function colocaResposta(){
 		coluna2 = "<table class='vetor'>";
 		for(j=1;j<=variaveisOriginais;j++){
 			coluna2+="<tr><td>"
-			coluna2+=x[j];
+			coluna2+=arredondado(x[j]);
 			coluna2+="</td></tr>"
 		}
 		coluna2+="</table>"
 		$("#resultados").append("<table style='text-align=center;'><tr><td id='chess'>X = </td><td>"+coluna2+"<td></tr></table>");
 		if(!temBaOk && !(CrNaoNegativo())){
 		$("#resultados").append("<br>");
-			$("#resultados").append("e outas infinitas soluções");
+			$("#resultados").append("*Solução ilimitada*");
 		}
 				$("#resultados").append("<br><br>");
 
@@ -445,20 +443,35 @@ function previewFuncaoObjetivo(){
 		else
 		$("#preview").append(funcaoObjetivo[j]);
 
-		$("#preview").append("X<sub>"+j+"</sub>");
+		$("#preview").append("X<sub>"+j+"</sub>  ");
 		if(j!=variaveis)
-			$("#preview").append(" +");
+			if(funcaoObjetivo[j+1]>=0)
+				$("#preview").append("+");
 	}
 }
 
+function isArtificial(t){
+	for(i=1;i<=contadorArtificiais;i++)
+		if (t==artificial[i]) return true;
+	return false;
+}
+
+function arredondado(t){
+	return Math.round(t*100)/100;
+}
+
 function preview(I,J){
+	var apende;
 	$("#preview").append("<br><br>");
 	$("#preview").append("<table>");
 		$("#preview").append("<tr>");
 			$("#preview").append("<td></td>");
 			$("#preview").append("<td class='tabeleiro dir' >variaveis</td>");
-			for(j=1;j<=variaveis;j++)
-				$("#preview").append("<td class='tabeleiro'>X<sub>"+j+"</sub></td>");		
+			for(j=1;j<=variaveis;j++){
+				apende = "X<sub>"+j+"</sub>";
+				if(isArtificial(j)) apende += "<sup>*</sup>";
+				$("#preview").append("<td class='tabeleiro'>"+apende+"</td>");		
+			}
 
 		$("#preview").append("</tr>");	
 
@@ -477,6 +490,7 @@ function preview(I,J){
 		$("#preview").append("</tr>");
 
 		for(i=1;i<=restricoes;i++){
+			apende = 
 			$("#preview").append("<tr>");
 			$("#preview").append("<td class='tabeleiro'>X<sub>"+ basica[i] +"</sub></td>");
 			if(funcaoObjetivo[basica[i]]<m)
@@ -485,14 +499,14 @@ function preview(I,J){
 				$("#preview").append("<td class='dir'>M</td>");
 			for(j=1;j<=variaveis;j++)
 				if(I==i && J==j)
-					$("#preview").append("<td class='pivo'>"+A[i][j]+"</td>");
+					$("#preview").append("<td class='pivo'>"+arredondado(A[i][j])+"</td>");
 				else
-					$("#preview").append("<td>"+A[i][j]+"</td>");
-			$("#preview").append("<td class='esq'>"+b[i]+"</td>");			
+					$("#preview").append("<td>"+arredondado(A[i][j])+"</td>");
+			$("#preview").append("<td class='esq'>"+arredondado(b[i])+"</td>");			
 			if(ba[i]<m)
-				$("#preview").append("<td>"+ba[i]+"</td>");			
+				$("#preview").append("<td>"+arredondado(ba[i])+"</td>");			
 			else
-				$("#preview").append("<td>ºº</tr>")
+				$("#preview").append("<td>&infin;</tr>")
 			$("#preview").append("</tr>");
 		}
 		$("#preview").append("<tr>");
@@ -504,7 +518,7 @@ function preview(I,J){
 				else if (Cr[j]<-m)
 					$("#preview").append("<td class='up'>-M</td>");
 				else
-					$("#preview").append("<td class='up'>"+Cr[j]+"</td>");
+					$("#preview").append("<td class='up'>"+arredondado(Cr[j])+"</td>");
 			if(temArtificial)
 				$("#preview").append("<td class='esq up red'>"+z+"</td>");
 			else
