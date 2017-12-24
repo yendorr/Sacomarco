@@ -8,6 +8,7 @@ var temBaOk = true;
 var temSobras;
 var i,j;
 var b = [], Cr = [], A = [], funcaoObjetivo = [], s = [], ba = [], x = [];
+var custoArtificiais = [];
 var basica = [], naoBasica = [],sobra = [], deOnde = [], artificial = [],basesVisitadas = [];
 var contadorBasicas, contadorSobras, contadorArtificiais, contadorVisitadas;
 var z;
@@ -81,6 +82,7 @@ function validaValores(){
 function zera(){
 	for(i=0;i<=restricoes;i++){
 		funcaoObjetivo[i] = null;
+		custoArtificiais[i] = 0;
 		$("#z"+i).val(null);
 		for(j=0;j<=variaveis;j++){
 			A[i][j] = null;
@@ -95,6 +97,7 @@ function zera(){
 function salvaDados(){
 	for(i=1;i<=restricoes;i++){
 		funcaoObjetivo[i] = $("#z"+i).val();
+		custoArtificiais[i] = funcaoObjetivo[i];
 		for(j=1;j<=variaveis;j++)
 			A[i][j] = $("#A"+i+j).val();
 		s[i] = $("#s"+i).find('option:selected').text();
@@ -126,25 +129,54 @@ function resolve(){
 	zeraContadores();
 	formaPadrao();
 	previewFuncaoObjetivo();
-	calculaCr();
-	pivoJ = escolheNaoBasica();
-	calculaBa(pivoJ);
-	pivoI = escolheBasica();
-	calculaX();
-	calculaZ();
-	preview(pivoI,pivoJ);
 
-	while(!deuRuim(pivoI,pivoJ)){
-		trocaBase(pivoI,pivoJ);
-		escalona(pivoI,pivoJ);
-		calculaCr();
+	if(temArtificial){
+		calculaCr(1);
 		pivoJ = escolheNaoBasica();
 		calculaBa(pivoJ);
 		pivoI = escolheBasica();
 		calculaX();
 		calculaZ();
-		preview(pivoI,pivoJ);
+		preview(pivoI,pivoJ,1);
+		var noice;
+		//** os criterios de parada estao realmente ok? olhar
+		while(!deuRuim(pivoI,pivoJ)){
+			trocaBase(pivoI,pivoJ);
+			escalona(pivoI,pivoJ);
+			calculaCr(1);
+			pivoJ = escolheNaoBasica();
+			calculaBa(pivoJ);
+			pivoI = escolheBasica();
+			calculaX();
+			calculaZ();
+			preview(pivoI,pivoJ,1);
+			noice = deuRuim();
+		}
+		removeColunasArtificiais();	
+		noice = deuRuim();
 	}
+
+	calculaCr(2);
+	pivoJ = escolheNaoBasica();
+	calculaBa(pivoJ);
+	pivoI = escolheBasica();
+	calculaX();
+	calculaZ();
+	preview(pivoI,pivoJ,2);
+	var legal;
+	while(!deuRuim(pivoI,pivoJ)){
+		trocaBase(pivoI,pivoJ);
+		escalona(pivoI,pivoJ);
+		calculaCr(2);
+		pivoJ = escolheNaoBasica();
+		calculaBa(pivoJ);
+		pivoI = escolheBasica();
+		calculaX();
+		calculaZ();
+		preview(pivoI,pivoJ,2);
+		legal = deuRuim();
+	}
+		legal = deuRuim();
 		previewExtra();
 }
 
@@ -196,7 +228,7 @@ function deuRuim(i,j){
 
 
 function CrNaoNegativo(){
-	for(j=1;j<variaveis;j++)
+	for(j=1;j<=variaveis;j++)
 		if(Cr[j]<0)
 			return false;
 	return true;
@@ -243,12 +275,13 @@ function calculaZ(){
 		z = -z;
 }
 
-
 function zeraContadores(){
 	contadorBasicas = 0;
 	contadorSobras = 0;
 	contadorArtificiais = 0;
 	contadorVisitadas = 0;
+	for(i=1;i<=variaveis;i++)
+		custoArtificiais[i] = 0;
 
 	variaveis = $("#variaveis").val();
 	restricoes = $("#restricoes").val();
@@ -297,6 +330,7 @@ function formaMenor(linha){
 	deOnde[contadorSobras] = j;
 	A[linha][variaveis] = 1;
 	funcaoObjetivo[variaveis] = 0;
+	custoArtificiais[variaveis] = 0;
 }
 
 function formaMaior(linha){
@@ -307,7 +341,7 @@ function formaMaior(linha){
 	deOnde[contadorSobras] = j;
 	A[linha][variaveis] = -1;	
 	funcaoObjetivo[variaveis] = 0;
-	temArtificial = true;
+	custoArtificiais[variaveis] = 0;
 
 	variaveis++;
 	for(j=1;j<=restricoes;j++)
@@ -315,7 +349,9 @@ function formaMaior(linha){
 	basica[++contadorBasicas] = variaveis;
 	artificial[++contadorArtificiais] = variaveis;
 	A[linha][variaveis] = 1;
-	funcaoObjetivo[variaveis] = M; 
+	funcaoObjetivo[variaveis] = 0;
+	custoArtificiais[variaveis] = 1; 
+	temArtificial = true;
 }
 
 function formaIgual(linha){
@@ -325,18 +361,28 @@ function formaIgual(linha){
 	basica[++contadorBasicas] = variaveis;
 	artificial[++contadorArtificiais] = variaveis;
 	A[linha][variaveis] = 1;
-	funcaoObjetivo[variaveis] = M;
+	funcaoObjetivo[variaveis] = 0;
+	custoArtificiais[variaveis] = 1;
 	temArtificial = true;
 }
 
-function calculaCr(){
-	for(j=1;j<=variaveis;j++){
-		soma=0;
-		for(i=1;i<=restricoes;i++){
-			soma+=funcaoObjetivo[basica[i]]*A[i][j];
+function calculaCr(fase){
+	if(fase == 1)
+		for(j=1;j<=variaveis;j++){
+			soma = 0;
+			for(i=1;i<=restricoes;i++){
+				soma+=custoArtificiais[basica[i]]*A[i][j];
+			}
+			Cr[j] = custoArtificiais[j] - soma;
 		}
-		Cr[j] = funcaoObjetivo[j] - soma;
-	}
+	else if(fase == 2)
+		for(j=1;j<=variaveis;j++){
+			soma = 0;
+			for(i=1;i<=restricoes;i++){
+				soma+=funcaoObjetivo[basica[i]]*A[i][j];
+			}
+			Cr[j] = funcaoObjetivo[j] - soma;
+		}
 }
 
 function calculaBa(coluna){
@@ -388,11 +434,27 @@ function verificaArtificiais(){
 	for(i=1;i<=contadorArtificiais;i++)
 		for(j=1;j<=restricoes;j++)
 			if(artificial[i]==basica[j]){
-				temArtificial = true
+				temArtificial = true;
 				return 1;
 			}
 	temArtificial = false;
 	return 0;
+}
+
+function removeColunasArtificiais(){
+	var k;
+	for(k=contadorArtificiais;k>0;k--){
+		for(i=1;i<=restricoes;i++){
+			for(j=artificial[k];j<=variaveis;j++){
+				A[i][j]=A[i][j+1];
+			}
+		}
+		if (basica[i]==k) 
+			basica[i]++;
+		
+		variaveis--;
+		artificial[k]=0;
+	}
 }
 
 function colocaResposta(){
@@ -460,16 +522,80 @@ function arredondado(t){
 	return Math.round(t*100)/100;
 }
 
-function preview(I,J){
+function preview(I,J,fase){
 	var apende;
 	$("#preview").append("<br><br>");
-	$("#preview").append("<table>");
+	if (fase == 1){
+		$("#preview").append("<table>");
+		$("#preview").append("<tr>");
+			$("#preview").append("<td></td>");
+			$("#preview").append("<td class='tabeleiro dir claro' >variaveis</td>");
+			for(j=1;j<=variaveis;j++){
+				apende = "X<sub>"+j+"</sub>";
+				if(isArtificial(j)) apende += "<sup>*</sup>";
+				$("#preview").append("<td class='tabeleiro'>"+apende+"</td>");		
+			}
+
+		$("#preview").append("</tr>");	
+
+		$("#preview").append("<tr>");
+			$("#preview").append("<td class='tabeleiro down claro'> bases </td>");
+			$("#preview").append("<td class='down dir claro'> </td>");
+			console.log(custoArtificiais);
+			for(j=1;j<=variaveis;j++)
+				if(custoArtificiais[j]<m)
+					$("#preview").append("<td class='down claro'>"+ custoArtificiais[j] +"</td>");	
+				else
+					$("#preview").append("<td class='down claro'>M</td>");	
+
+			$("#preview").append("<td class='esq down claro tabeleiro'>b</td>");
+			$("#preview").append("<td class='down claro tabeleiro'>b/a</td>");
+		$("#preview").append("</tr>");
+
+		for(i=1;i<=restricoes;i++){
+			$("#preview").append("<tr>");
+			$("#preview").append("<td class='tabeleiro'>X<sub>"+ basica[i] +"</sub></td>");
+			if(custoArtificiais[basica[i]]<m)
+				$("#preview").append("<td class='dir claro'>"+ custoArtificiais[basica[i]] +"</td>");
+			else
+				$("#preview").append("<td class='dir claro'>M</td>");
+			for(j=1;j<=variaveis;j++)
+				if(I==i && J==j)
+					$("#preview").append("<td class='pivo'>"+arredondado(A[i][j])+"</td>");
+				else
+					$("#preview").append("<td>"+arredondado(A[i][j])+"</td>");
+			$("#preview").append("<td class='esq claro'>"+arredondado(b[i])+"</td>");			
+			if(ba[i]<m)
+				$("#preview").append("<td>"+arredondado(ba[i])+"</td>");			
+			else
+				$("#preview").append("<td>&infin;</tr>")
+			$("#preview").append("</tr>");
+		}
+		$("#preview").append("<tr>");
+		$("#preview").append("<td class= 'up claro'></td>");
+		$("#preview").append("<td class='dir claro up'></td>");
+			for(j=1;j<=variaveis;j++)
+				if(Cr[j]>m)
+					$("#preview").append("<td class='up claro'>M</td>");
+				else if (Cr[j]<-m)
+					$("#preview").append("<td class='up claro'>-M</td>");
+				else
+					$("#preview").append("<td class='up claro'>"+arredondado(Cr[j])+"</td>");
+			if(temArtificial)
+				$("#preview").append("<td class='esq up claro red'>"+z+"</td>");
+			else
+				$("#preview").append("<td class='esq up claro green'>"+z+"</td>");
+			$("#preview").append("<td class='up claro'></td>");
+		$("#preview").append("</tr>");
+	$("#preview").append("</table>");
+	}
+	else if(fase == 2){
+		$("#preview").append("<table>");
 		$("#preview").append("<tr>");
 			$("#preview").append("<td></td>");
 			$("#preview").append("<td class='tabeleiro dir' >variaveis</td>");
 			for(j=1;j<=variaveis;j++){
 				apende = "X<sub>"+j+"</sub>";
-				if(isArtificial(j)) apende += "<sup>*</sup>";
 				$("#preview").append("<td class='tabeleiro'>"+apende+"</td>");		
 			}
 
@@ -490,7 +616,6 @@ function preview(I,J){
 		$("#preview").append("</tr>");
 
 		for(i=1;i<=restricoes;i++){
-			apende = 
 			$("#preview").append("<tr>");
 			$("#preview").append("<td class='tabeleiro'>X<sub>"+ basica[i] +"</sub></td>");
 			if(funcaoObjetivo[basica[i]]<m)
@@ -526,6 +651,8 @@ function preview(I,J){
 			$("#preview").append("<td class='up'></td>");
 		$("#preview").append("</tr>");
 	$("#preview").append("</table>");
+	}
+	
 }
 
 function previewExtra(){

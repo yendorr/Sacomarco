@@ -68,12 +68,12 @@ td{
 	border-bottom: solid black 1px;
 }
 
-.red{
-	color: red;
-}
-
 .green{
 	color: green;
+}
+
+.red{
+	color: red;
 }
 
 .tabeleiro{
@@ -94,6 +94,10 @@ td{
 	border-color: #000000;
 	border-collapse: separate;
 	padding: 2px;
+}
+
+.claro{
+	border-color: #bdb76b;
 }
 
 #max:hover{

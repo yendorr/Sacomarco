@@ -197,7 +197,7 @@ function deuRuim(i,j){
 
 function CrNaoNegativo(){
 	for(j=1;j<variaveis;j++)
-		if(Cr[j]<0)
+		if(Cr[j]<=0)
 			return false;
 	return true;
 }
