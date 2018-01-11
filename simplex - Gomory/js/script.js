@@ -1,5 +1,6 @@
 const maxVariaveis = 12, minVariaveis = 1, maxRestricoes = 12, minRestricoes = 1;
 const M = (27+10+1998)*999999999999999999999999999, m = 999999999999999999999999999;
+const epsilon = 0.00000001;
 var variaveis = 3,restricoes = 3;
 var variaveisOriginais, restiçoesOriginais;
 var max = false;
@@ -18,6 +19,7 @@ primeiraExecução = true;
 for(i=0;i<=maxVariaveis*3;i++){
 	basesVisitadas[i] = [];
 	A[i] = [];
+	inteira[i] = false;
 } 
 
 $(document).ready(function(){
@@ -41,7 +43,7 @@ function atulizaTabela(){
 	for(i=1;i<=variaveis;i++){
 		$("#tabela").append("<input class='Input ' type='text' id='z"+i+"'> X");
 		$("#tabela").append("<sub>"+i+" </sub>");
-		if(i!=variaveis)	$("#tabela").append(" + ");		
+		if(i!=variaveis)	$("#tabela").append(" + ");
 	}
 	$("#tabela").append("<br><br>");
 	//coloca tabela restiçoes _times variaveis		
@@ -95,11 +97,13 @@ function zera(){
 function salvaDados(){
 	for(i=1;i<=restricoes;i++){
 		funcaoObjetivo[i] = $("#z"+i).val();
+		inteira[i] = true;
 		for(j=1;j<=variaveis;j++)
 			A[i][j] = $("#A"+i+j).val();
 		s[i] = $("#s"+i).find('option:selected').text();
 		b[i] = $("#b"+i).val();
 	}
+	for(i=restricoes+1;i<=maxVariaveis*3;i++) inteira[i] = false;
 }
 
 function restauraDados(){
@@ -153,12 +157,47 @@ function resolve(){
 function basicasInteiras(){
 	for(i=1;i<=restricoes;i++){
 		if(inteira[basica[i]])
-			if(b[i] is !integer){
-				addRestricao()
-				return false
+			if(!isInteiro(b[i])){
+				addRestricao(i);
+				return false;
 			}
 	}
 	return true;
+}
+	
+function addRestricao(linha){
+	restricoes++;
+	for(j=1;j<=variaveis;j++)
+		A[restricoes][j]=parteReal(A[linha][j]);
+	A[restricoes][++variaveis] = -1;
+	deOnde[++contadorSobras] = restricoes;
+	sobra[contadorSobras] = variaveis;
+	A[restricoes][++variaveis] = 1;
+	artificial[++contadorArtificiais] = variaveis;
+	temArtificial = true;
+}
+
+function isInteiro(num){
+	return (Math.abs(Math.round(num)-num)<epsilon);
+}
+
+function parteReal(num){
+	var retornador = num - Math.round(num);
+	if(num>0){
+		if(retornador<0)
+			retornador+=1;
+		return retornador;
+	}
+	else{
+		if(retornador>0){	
+			retornador-=1;
+			retornador = Math.abs(retornador);
+		}
+		else
+			retornador+=1;
+		
+		return retornador;
+	}
 }
 
 function escalona(I,J){
@@ -543,17 +582,19 @@ function preview(I,J){
 
 function previewExtra(){
 	$("#divSobras").empty();
-	temSobras = false; 
+	temSobras = 0; 
 	for(i=1;i<=restricoes;i++)
 		if(x[sobra[i]]){
 		$("#divSobras").append("Restrição "+i+": x<sub>"+sobra[i]+"</sub> = "+x[sobra[i]]);
 		$("#divSobras").append("<br>");
-		temSobras = true;
+		temSobras ++;
 	}
 	if(!temSobras){
 		$("#divSobras").append("Não há sobras");
 		$("#divSobras").append("<br>");
 	}
+	$("#qtnsSobras").empty();
+	$("#qntsSobras").append(temSobras);
 }
 
 
@@ -561,6 +602,17 @@ function verSobras(){
 	$('#divSobras').collapse('toggle'); 
     
 }
+
+// function atualizaXInt(num){
+// 	var classe;
+// 	inteira[num]=!inteira[num];
+// 	$("#divX"+num).empty();
+// 	if(inteira[num]) 
+// 		$("#divX"+num).append("<div class='inteira z'>X<sub>"+i+"</sub>");
+// 	else
+// 		$("#divX"+num).append("<div class='inteira z inteira'>X<sub>"+i+"</sub>");
+	
+// }
 
 function atualizaMax(){
 	$("#max").empty();

@@ -650,17 +650,19 @@ function preview(I,J,fase){
 
 function previewExtra(){
 	$("#divSobras").empty();
-	temSobras = false; 
+	temSobras = 0; 
 	for(i=1;i<=restricoes;i++)
 		if(x[sobra[i]]){
 		$("#divSobras").append("Restrição "+i+": x<sub>"+sobra[i]+"</sub> = "+x[sobra[i]]);
 		$("#divSobras").append("<br>");
-		temSobras = true;
+		temSobras++;
 	}
 	if(!temSobras){
 		$("#divSobras").append("Não há sobras");
 		$("#divSobras").append("<br>");
 	}
+	$("#qntsSobras").empty();
+	$("#qntsSobras").append(temSobras);
 }
 
 

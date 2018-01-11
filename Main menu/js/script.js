@@ -13,6 +13,7 @@ var contadorBasicas, contadorSobras, contadorArtificiais, contadorVisitadas;
 var z;
 var interpretacao;
 
+
 primeiraExecução = true;
 for(i=0;i<=maxVariaveis*3;i++){
 	basesVisitadas[i] = [];
@@ -529,19 +530,17 @@ function preview(I,J){
 
 function previewExtra(){
 	$("#divSobras").empty();
-	temSobras = 0; 
+	temSobras = false; 
 	for(i=1;i<=restricoes;i++)
 		if(x[sobra[i]]){
 		$("#divSobras").append("Restrição "+i+": x<sub>"+sobra[i]+"</sub> = "+x[sobra[i]]);
 		$("#divSobras").append("<br>");
-		temSobras++;
+		temSobras = true;
 	}
 	if(!temSobras){
 		$("#divSobras").append("Não há sobras");
 		$("#divSobras").append("<br>");
 	}
-	$("#qntsSobras").empty();
-	$("#qntsSobras").append(temSobras);
 }
 
 
