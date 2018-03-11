@@ -1,0 +1,145 @@
+*{
+	margin: 0px;
+	padding: 0px;
+	border: 0px;
+}
+body{
+	padding-top: 54px;
+}
+
+button{
+	display: inline-block;
+}
+
+img{
+	border-radius: 70%;
+	max-width: 100%;
+	max-height: 100%;
+}
+
+td{
+	padding-right: 2px;
+	padding-left: 2px;
+	width: 8%;
+	text-align: center;
+}
+
+.Input{
+	border-bottom: solid 1px;
+	width:  3%;
+	text-align: right;
+}
+
+.InputNumber{
+	width:9%;
+}
+
+.Textao{
+	border-bottom:solid 3px;
+}
+
+.S{
+	-webkit-appearance: none; 
+	-moz-appearance: none;
+   	appearance: none; 
+   	width: 2%;
+   	text-align: center;
+   	margin-right: 0.3%;
+   	margin-left: 0.2%;
+}
+
+.Indice{
+	font-size: 0.75em;
+}
+
+.up{
+	border-top: solid black 1px;
+}
+
+.dir{
+	border-right: solid black 1px;
+}
+
+.esq{
+	border-left: solid black 1px;
+}
+
+.down{
+	border-bottom: solid black 1px;
+}
+
+.red{
+	color: red;
+}
+
+.green{
+	color: green;
+}
+
+.tabeleiro{
+	font-size: 0.8em;
+	font-style: italic;
+}
+
+.pivo{
+	background-color: powderblue; 
+	border: dotted 2px;
+	border-color: #306066;
+}
+
+.vetor{
+	border-radius: 17px;
+	border-width: 2px;
+	border-style: none solid none solid;
+	border-color: #000000;
+	border-collapse: separate;
+	padding: 2px;
+}
+
+.inteira{
+	background-color: blue;
+}
+.z{
+	max-width: 10%;
+}
+
+#max:hover{
+	color:blue;
+}
+
+#tabela{
+	margin-top: 2%;
+}
+
+#chess{
+	text-align: right;
+}
+
+#resultados{
+	text-align: center;
+}
+
+#go{
+	margin-left: 20%;
+	margin-top: 5%;
+}
+
+#clear{
+	margin-left: 24%;
+	margin-top: 2%;
+}
+
+#divSobras {
+    border-width: 2px;
+    border-color: black;
+    border-style: solid;
+    margin-left: 2%;
+    border-radius: 15px;
+    margin-right: 70%;
+}
+
+@media (min-width: 992px) {
+	body{
+		padding-top: 56px;
+	}
+}

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Simplex</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/stylesheet.css" rel="stylesheet">
+
+    <!-- Bootstrap core JavaScript -->
+    <script src="js/jquery-3.2.1.min.js"></script>
+    <script src="js/bootstrap.bundle.min.js"></script>
+    <script src="js/script.js"></script>
+    <!-- Custom styles for this template -->
+    
+
+  </head>
+
+  <body>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-secondary fixed-top">
+      <div class="container">
+        <a class="navbar-brand" href="../index.html">Rodney Souza</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="../simplex/index.html">Simplex</a>
+            </li>
+            <li class="nav-item active">
+              <a class="nav-link" href="#">Simplex dupla fase</a>
+                <span class="sr-only">(current)</span>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="../simplex - Gomory/index.html">Gomory</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link disabled" href="#">Transporte</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link disabled" href="#">Produção</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Page Content -->
+    <div class="container">
+      <!--main row 1-->
+      <div class="row">
+        <!--col esquerda geral 2-->
+        <div class="col-md-10 text-left">
+          <!--row header-->
+          <div class="row">
+            <h1 class="Textao">Entrada de dados</h1>
+          </div>
+          <!--row min/max 3-->
+          <div class=row>
+            <div class="col-md-2">
+              Tipo do problema  
+            </div>
+            <div class="col-md-2" id="max">
+              Minimizar
+            </div>
+          </div>
+          <!--row variaveis 3-->
+          <div class="row">
+            <div class="col-md-2 text-left">
+              Nº de variaveis
+            </div>
+            <div class="col-md-6" >
+              <input id="variaveis" type="number" value=3  name="" class="Input InputNumber">
+            </div>
+          </div>
+          <!--row restriçoes 3-->
+          <div class="row">
+            <div class="col-md-2 text-left">
+              Nº de restrições
+            </div>
+            <div class="col-md-6 text-left">
+              <input id="restricoes" type="number" value=3 name="" class="Input InputNumber">
+            </div>
+          </div>
+          <div class="col-md-12" id="tabela">
+              
+          </div>
+          <div class="col-md-6">
+            <button id="go" >Simplexar</button>
+          </div>
+          <div class="col-md-6">
+            <button id="clear">Clear</button>
+          </div>
+        </div>
+        <!---->
+        <div class="col-md-2 text-left"> 
+          <div id="resultados">
+            
+          </div>
+          <div id="foto">
+            
+          </div>
+        </div>
+
+      </div>
+    
+      <div id="folha" class="modal fade" role="dialog">
+        <div class="modal-dialog modal-lg">
+
+          <!-- Modal content-->
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title">Passos do simplex</h4>
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class = "modal-body" id="preview">
+              
+            </div>
+            <div class = "modal-body">
+              <label>
+                <button type='button' class='btn btn-primary' id='checkSobras'>
+                  Sobras <span class="badge badge-light"><div id='qntsSobras'>2</div></span>
+                </button>
+            </div>
+            <div class = "modal-body collapse" id="divSobras">
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>  
+
+    
+
+  </body>
+
+</html>
